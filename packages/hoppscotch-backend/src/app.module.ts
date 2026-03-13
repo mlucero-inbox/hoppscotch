@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { HttpException, Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -43,6 +44,11 @@ import { PublishedDocsModule } from './published-docs/published-docs.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      // Load .env from package dir and from monorepo root (when running from packages/hoppscotch-backend)
+      envFilePath: [
+        path.join(process.cwd(), '.env'),
+        path.join(process.cwd(), '../../.env'),
+      ],
       load: [async () => loadInfraConfiguration()],
     }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
